@@ -1,58 +1,37 @@
 import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import { Route, Switch } from 'react-router-dom';
+import { useAuth0, withAuth0 } from '@auth0/auth0-react';
+
+import NavBar from './components/NavBar';
+import Footer from './components/Footer';
+import Loading from './components/Loading';
+import Home from './pages/Home';
+import Profile from './pages/Profile';
+import ProtectedRoute from './features/auth/ProtectedRoute';
+
+import './app.css';
 
 function App() {
+  const { isLoading } = useAuth0();
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+    <div id="app" className="d-flex flex-column h-100">
+      <NavBar />
+      <div className="container flex-grow-1">
+        <div className="mt-5">
+          <Switch>
+            <Route path="/" exact component={Home} />
+            <ProtectedRoute path="/profile" component={Profile} />
+          </Switch>
+        </div>
+      </div>
+      <Footer />
     </div>
   );
 }
 
-export default App;
+export default withAuth0(App);
